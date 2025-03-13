@@ -1,0 +1,38 @@
+name: mark latest as stable
+run-name: Mark latest as stable
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  mark-as-stable:
+    name: mark-as-stable
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+    container: 
+      image: ghcr.io/gbraad-actions/fedora:latest
+      options: --privileged
+
+    steps:
+      - name: Login to ghcr.io
+        run: |
+          podman login ghcr.io -u ${{ github.actor }} \
+            -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and push container to registry
+        run: |
+          podman pull ghcr.io/gbraad-actions/fedora:latest
+          podman tag ghcr.io/gbraad-actions/fedora:latest \
+            ghcr.io/gbraad-actions/fedora:stable
+          podman push ghcr.io/gbraad-actions/fedora:stable
+
