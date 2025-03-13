@@ -1,0 +1,15 @@
+{
+    "name": "Job container - stable",
+    "image": "ghcr.io/gbraad-actions/fedora:stable",
+
+    "runArgs": [ "--cap-add=NET_ADMIN", "--cap-add=NET_RAW", "--device=/dev/net/tun", "--device=/dev/fuse" ],
+    "privileged": true,
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.Theme-TomorrowKit"
+            ]
+        }
+    }
+}
