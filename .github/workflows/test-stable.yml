@@ -1,0 +1,34 @@
+name: test stable
+run-name: Test stable
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-stable:
+    name: test-stable
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+    container: 
+      image: ghcr.io/gbraad-actions/fedora:stable
+      options: --privileged
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Run podman build - fedora
+        run: |
+          podman build -t ghcr.io/gbraad-actions/fedora:test \
+            --build-arg=BASE_IMAGE="quay.io/fedora/fedora" \
+            --build-arg=BASE_VERSION=41 \
+            --build-arg=ARCH="$(arch)" \
+            -f containers/Containerfile-fedora .
