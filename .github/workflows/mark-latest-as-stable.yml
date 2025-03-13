@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Create manifest
         run: |
-          podman manifest create fedora-manifest docker://ghcr.io/gbraad-actions/fedora:latest
+          podman manifest create --all fedora-manifest docker://ghcr.io/gbraad-actions/fedora:latest
 
       - name: Login to registry
         run: |
@@ -34,4 +34,4 @@ jobs:
 
       - name: Push container tag to registry
         run: |
-          podman manifest push fedora-manifest docker://ghcr.io/gbraad-actions/fedora:stable
+          podman manifest push --all fedora-manifest docker://ghcr.io/gbraad-actions/fedora:stable
