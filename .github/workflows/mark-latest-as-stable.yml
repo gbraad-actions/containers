@@ -18,21 +18,20 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - ubuntu-24.04-arm
     container: 
       image: ghcr.io/gbraad-actions/fedora:latest
       options: --privileged
 
     steps:
-      - name: Login to ghcr.io
+      - name: Create manifest
+        run: |
+          podman manifest create fedora-manifest docker://ghcr.io/gbraad-actions/fedora:latest
+
+      - name: Login to registry
         run: |
           podman login ghcr.io -u ${{ github.actor }} \
             -p ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag and push container to registry
+      - name: Push container tag to registry
         run: |
-          podman pull ghcr.io/gbraad-actions/fedora:latest
-          podman tag ghcr.io/gbraad-actions/fedora:latest \
-            ghcr.io/gbraad-actions/fedora:stable
-          podman push ghcr.io/gbraad-actions/fedora:stable
-
+          podman manifest push fedora-manifest docker://ghcr.io/gbraad-actions/fedora:stable
