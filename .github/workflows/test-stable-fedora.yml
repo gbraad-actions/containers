@@ -1,5 +1,5 @@
-name: test stable
-run-name: Test stable
+name: test stable - fedora
+run-name: Test stable - fedora
 
 on:
   workflow_dispatch:

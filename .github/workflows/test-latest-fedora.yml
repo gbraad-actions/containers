@@ -1,5 +1,5 @@
-name: test latest
-run-name: Test latest
+name: test latest - fedora
+run-name: Test latest - fedora
 
 on:
   workflow_dispatch:

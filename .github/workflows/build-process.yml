@@ -35,7 +35,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
-          check-name: 'build-container-fedora-amd64 (ubuntu-latest)'
+          check-name: 'build-container-fedora-amd64 (ubuntu-24.04)'
           wait-interval: 10
       - name: Wait for build-container-fedora-arm64 to complete
         uses: lewagon/wait-on-check-action@v1.3.4
@@ -43,6 +43,40 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
           check-name: 'build-container-fedora-arm64 (ubuntu-24.04-arm)'
+          wait-interval: 10
+
+
+  trigger-build-container-centos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start CentOS container build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-container-centos.yml',
+              ref: context.ref,
+            });
+
+  wait-for-build-container-centos:
+    runs-on: ubuntu-latest
+    needs: trigger-build-container-centos
+    steps:
+      - name: Wait for build-container-centos-amd64 to complete
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }} 
+          check-name: 'build-container-centos-amd64 (ubuntu-24.04)'
+          wait-interval: 10
+      - name: Wait for build-container-centos-arm64 to complete
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }} 
+          check-name: 'build-container-centos-arm64 (ubuntu-24.04-arm)'
           wait-interval: 10
 
 

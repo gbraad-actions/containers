@@ -1,5 +1,5 @@
-ARG BASE_IMAGE="fedora"
-ARG BASE_VERSION="41"
+ARG BASE_IMAGE="quay.io/centos/centos"
+ARG BASE_VERSION="stream9"
 
 FROM ${BASE_IMAGE}:${BASE_VERSION}
 
@@ -7,15 +7,20 @@ ARG ROOTHOME="/root"
 ARG ARCH="x86_64"
 
 RUN dnf install -y \
+        systemd \
         sudo \
         git \
         dnf-plugins-core \
-    && dnf install -y \
-        'dnf5-command(config-manager)' \
+    && dnf install -y --allowerasing --nobest \
+        util-linux \
+        util-linux-user \
     && dnf install -y \
         podman \
         skopeo \
-        buildah \
+        buildah \    
+    && dnf install -y \
+        epel-release \
+        epel-next-release \
     && dnf install -y \
         git-core zsh stow vim tmux screen fzf jq \
         powerline vim-powerline tmux-powerline \
@@ -27,7 +32,7 @@ RUN chmod 0640 /etc/shadow
 
 USER root
 
-RUN git clone https://github.com/gbraad-dotfiles/upstream.git ${ROOTHOME}/.dotfiles --depth 2\
+RUN git clone https://github.com/gbraad-dotfiles/upstream.git ${ROOTHOME}/.dotfiles --depth 2 \
     && cd ${ROOTHOME}/.dotfiles \
     && . ./zsh/.zshrc.d/dotfiles.zsh \
     && stow config \
@@ -37,7 +42,7 @@ RUN chsh -s /usr/bin/zsh ${USER} \
     && chsh -s /usr/bin/zsh
 
 # install tailscale (or use https://github.com/spotsnel/tailscale-systemd/)
-RUN dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+RUN dnf config-manager --add-repo https://pkgs.tailscale.com/stable/centos/9/tailscale.repo \
     && dnf install -y \
         tailscale \
     && dnf clean all \

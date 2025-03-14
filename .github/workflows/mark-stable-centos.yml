@@ -1,5 +1,5 @@
-name: mark latest as stable
-run-name: Mark latest as stable
+name: mark latest as stable - centos
+run-name: Mark latest as stable - centos
 
 on:
   workflow_dispatch:
@@ -19,13 +19,13 @@ jobs:
         os:
           - ubuntu-24.04
     container: 
-      image: ghcr.io/gbraad-actions/fedora:latest
+      image: ghcr.io/gbraad-actions/centos:latest
       options: --privileged
 
     steps:
       - name: Create manifest
         run: |
-          podman manifest create --all fedora-manifest docker://ghcr.io/gbraad-actions/fedora:latest
+          podman manifest create --all centos-manifest docker://ghcr.io/gbraad-actions/centos:latest
 
       - name: Login to registry
         run: |
@@ -34,4 +34,4 @@ jobs:
 
       - name: Push container tag to registry
         run: |
-          podman manifest push --all fedora-manifest docker://ghcr.io/gbraad-actions/fedora:stable
+          podman manifest push --all centos-manifest docker://ghcr.io/gbraad-actions/centos:stable
