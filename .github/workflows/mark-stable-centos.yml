@@ -9,29 +9,7 @@ on:
 jobs:
   mark-as-stable:
     name: mark-as-stable
-    permissions:
-      contents: read
-      packages: write
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-    container: 
-      image: ghcr.io/gbraad-actions/centos:latest
-      options: --privileged
-
-    steps:
-      - name: Create manifest
-        run: |
-          podman manifest create --all centos-manifest docker://ghcr.io/gbraad-actions/centos:latest
-
-      - name: Login to registry
-        run: |
-          podman login ghcr.io -u ${{ github.actor }} \
-            -p ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push container tag to registry
-        run: |
-          podman manifest push --all centos-manifest docker://ghcr.io/gbraad-actions/centos:stable
+    uses: ./.github/workflows/reusable-mark-as-stable.yml
+    with:
+      container_name: "centos"
+    secrets: inherit

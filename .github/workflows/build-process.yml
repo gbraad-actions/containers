@@ -25,6 +25,9 @@ jobs:
               workflow_id: 'build-container-fedora.yml',
               ref: context.ref,
             });
+      - name: Wait a little
+        run: |
+          sleep 10
 
   wait-for-build-container-fedora:
     runs-on: ubuntu-latest
@@ -35,14 +38,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
-          check-name: 'build-container-fedora-amd64 (ubuntu-24.04)'
+          check-name: 'Build and push - Fedora / Build AMD64 / Build Container'
           wait-interval: 10
       - name: Wait for build-container-fedora-arm64 to complete
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
-          check-name: 'build-container-fedora-arm64 (ubuntu-24.04-arm)'
+          check-name: 'Build and push - Fedora / Build ARM64 / Build Container'
           wait-interval: 10
 
 
@@ -59,6 +62,9 @@ jobs:
               workflow_id: 'build-container-centos.yml',
               ref: context.ref,
             });
+      - name: Wait a little
+        run: |
+          sleep 10
 
   wait-for-build-container-centos:
     runs-on: ubuntu-latest
@@ -69,16 +75,15 @@ jobs:
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
-          check-name: 'build-container-centos-amd64 (ubuntu-24.04)'
+          check-name: 'Build and push - CentOS / Build AMD64 / Build Container'
           wait-interval: 10
       - name: Wait for build-container-centos-arm64 to complete
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }} 
-          check-name: 'build-container-centos-arm64 (ubuntu-24.04-arm)'
+          check-name: 'Build and push - CentOS / Build ARM64 / Build Container'
           wait-interval: 10
-
 
 #  mark-latest-as-stable:
 #    runs-on: ubuntu-latest

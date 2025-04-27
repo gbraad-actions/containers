@@ -1,0 +1,40 @@
+name: test container
+
+on:
+  workflow_call:
+    inputs:
+      container_name:
+        description: "Name of the container (e.g., fedora, ubi9)"
+        required: true
+        type: string
+      base_version:
+        description: "Base version identifier"
+        required: true
+        type: string
+
+jobs:
+  test-latest:
+    name: test-${{ inputs.base_version }}
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+    container: 
+      image: ghcr.io/${{ github.repository_owner }}/${{ inputs.container_name }}:${{ inputs.base_version }}
+      options: --privileged
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Run podman build
+        run: |
+          podman build -t ghcr.io/${{ github.repository_owner }}/${{ inputs.container_name }}:test \
+            --build-arg=ARCH="$(arch)" \
+            -f containers/Containerfile-${{ inputs.container_name }} .
